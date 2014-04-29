@@ -62,21 +62,23 @@
 		      
 			swipeLeft:function(event, direction, distance, duration, fingerCount) {
 				game.snake.direction(-1,0);
+				game.deplacement();
 			},
 			
 			swipeRight:function(event, direction, distance, duration, fingerCount) {
 				game.snake.direction(1,0);
+				game.deplacement();
 			},
 			
 			swipeUp:function(event, direction, distance, duration, fingerCount) {
 				game.snake.direction(0,-1);
+				game.deplacement();
 			},
 			
 			swipeDown:function(event, direction, distance, duration, fingerCount) {
 				game.snake.direction(0,1);  
-			},
-		    //Default is 75px, set to 0 for demo so any distance triggers swipe
-			threshold:0
+				game.deplacement();
+			}
 		});
 		
 		// CSS
