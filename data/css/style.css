@@ -30,7 +30,7 @@ div[id^='objet'] p,.snake-body p{
 	margin:auto;
 	width:100%;
 	border-collapse:collapse;
-	background-color:rgba(190,190,190,1);
+	background-color:rgba(0,0,0,1);
 }
 
 #table td{
