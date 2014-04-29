@@ -62,19 +62,19 @@
 		$(window).swipe( {
 		      
 			swipeLeft:function(event, direction, distance, duration, fingerCount) {
-				alert("You swiped " + direction + "" );  
+				game.snake.direction(-1,0);
 			},
 			
 			swipeRight:function(event, direction, distance, duration, fingerCount) {
-				alert("You swiped " + direction + "" );  
+				game.snake.direction(1,0);
 			},
 			
 			swipeUp:function(event, direction, distance, duration, fingerCount) {
-				alert("You swiped " + direction + "" );  
+				game.snake.direction(0,-1);
 			},
 			
 			swipeDown:function(event, direction, distance, duration, fingerCount) {
-				alert("You swiped " + direction + "" );  
+				game.snake.direction(0,1);  
 			},
 		    //Default is 75px, set to 0 for demo so any distance triggers swipe
 			threshold:0
