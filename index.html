@@ -1,1 +1,114 @@
-test
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="fr">
+<head>
+	<title>Snake2048</title>
+	<meta http-equiv="content-type" content="text/html; charset=UTF-8" />
+	<meta name="author" content="Charly Berthet" />
+	<meta name="viewport" content="initial-scale=1.0, user-scalable=no" />
+	
+	<!-- <link rel="icon" type="image/png" href="data/img/logo.png" />  -->
+	
+	<!-- INCLUSION CSS -->
+	<link rel="stylesheet" type="text/css" href="data/css/style.css" />
+	
+	
+	<!-- INCLUSION js JQUERY -->
+	<script type="text/javascript" src="data/js/fw/jquery.js"></script>
+	<script type="text/javascript" src="data/js/fw/jquery.mobile.js"></script>
+	<script type="text/javascript" src="data/js/fw/jqRotate.js"></script>
+	<script type="text/javascript" src="data/js/fw/swipe.js"></script>
+	
+	<!-- INCLUSION js CLASS -->
+	<script type="text/javascript" src="data/js/class/cellule.js"></script>
+	<script type="text/javascript" src="data/js/class/objet.js"></script>
+	<script type="text/javascript" src="data/js/class/head.js"></script>
+	<script type="text/javascript" src="data/js/class/body.js"></script>
+	<script type="text/javascript" src="data/js/class/snake.js"></script>
+	<script type="text/javascript" src="data/js/class/game.js"></script>
+	<!-- MAIN -->
+	<script type="text/javascript">
+	$(function(){
+		
+		// START
+		var game = new Game($("#table"),6,6);
+		game.drawTable();
+		game.drawSnake();
+		
+		
+		// EVENT
+		$("body").keydown(function(e){
+			
+			
+			// CHANGE SENS DEPLACEMENT
+			if(e.which == 37 ) // LEFT
+				game.snake.direction(-1,0);
+			else if(e.which == 38) // UP
+				game.snake.direction(0,-1);
+			else if(e.which == 39) // RIGHT
+				game.snake.direction(1,0);
+			else if(e.which == 40) // DOWN
+				game.snake.direction(0,1);
+			
+			
+			// MOVE & DRAW
+			if(e.which == 37 || e.which == 38 || e.which == 39 || e.which == 40){
+				game.deplacement();
+			}
+				
+		});
+		
+		
+		// SWIPE
+		$(window).swipe( {
+		      
+			swipeLeft:function(event, direction, distance, duration, fingerCount) {
+				alert("You swiped " + direction + "" );  
+			},
+			
+			swipeRight:function(event, direction, distance, duration, fingerCount) {
+				alert("You swiped " + direction + "" );  
+			},
+			
+			swipeUp:function(event, direction, distance, duration, fingerCount) {
+				alert("You swiped " + direction + "" );  
+			},
+			
+			swipeDown:function(event, direction, distance, duration, fingerCount) {
+				alert("You swiped " + direction + "" );  
+			},
+		    //Default is 75px, set to 0 for demo so any distance triggers swipe
+			threshold:0
+		});
+		
+		// CSS
+		$("#table td").css("height", $("#table td").css("width"));
+	});
+	</script>
+	
+</head>
+	
+<header>
+	
+</header>
+
+
+<body>
+	<!-- ALL -->
+	<div id='all'>
+		
+		<!-- TABLE -->
+		<table id="table">
+		
+		</table>
+		
+		
+	</div><!-- fin div all -->		
+</body>
+
+
+<footer>
+	
+</footer>
+</html>
+
+
