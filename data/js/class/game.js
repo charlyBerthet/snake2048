@@ -104,21 +104,26 @@ Game.prototype.drawObjets = function(){
 
 // DEL BODY
 Game.prototype.delBody = function(numDel,numFus){
-	var w = $("#snake-body-"+numDel).css("width").split("px")[0];
-	var h = $("#snake-body-"+numDel).css("height").split("px")[0];
-	$("#snake-body-"+numDel).animate({
-		"opacity":"0",
-		"width":"0",
-		"height":"0",
-		"margin":((h/2)-2)+"px "+((w/2)-2)+"px"
-		},500,
-		function(){
-			$("#snake-body-"+numDel).remove();
-	});
+	try{
+		var w = $("#snake-body-"+numDel).css("width").split("px")[0];
+		var h = $("#snake-body-"+numDel).css("height").split("px")[0];
+		$("#snake-body-"+numDel).animate({
+			"opacity":"0",
+			"width":"0",
+			"height":"0",
+			"margin":((h/2)-2)+"px "+((w/2)-2)+"px"
+			},500,
+			function(){
+				$("#snake-body-"+numDel).remove();
+		});
+		
+		if(numFus != null){
+			this.animText(numFus);
+		}
+	}catch(e){
+		$("#snake-body-"+numDel).remove();
+	};
 	
-	if(numFus != null){
-		this.animText(numFus);
-	}
 	
 	
 };
