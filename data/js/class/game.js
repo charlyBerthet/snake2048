@@ -104,20 +104,17 @@ Game.prototype.drawObjets = function(){
 
 // DEL BODY
 Game.prototype.delBody = function(numDel,numFus){
-	$("#snake-body-"+numDel).animate({"opacity":"0"},1500);
-
-	var cpt = 0;
-	var time = setInterval(function(){
-		$("#snake-body-"+numDel).css({"transform": "rotate("+cpt+"deg)"});
-		cpt = cpt +  2;
-		
-		if(cpt > 360){
-			$("#snake-body-"+numDel).css({"transform": "rotate(360deg)"});
+	var w = $("#snake-body-"+numDel).css("width").split("px")[0];
+	var h = $("#snake-body-"+numDel).css("height").split("px")[0];
+	$("#snake-body-"+numDel).animate({
+		"opacity":"0",
+		"width":"0",
+		"height":"0",
+		"margin":((h/2)-2)+"px "+((w/2)-2)+"px"
+		},500,
+		function(){
 			$("#snake-body-"+numDel).remove();
-			clearInterval(time);
-		}
-			
-	},1);
+	});
 	
 	if(numFus != null){
 		this.animText(numFus);
@@ -129,7 +126,27 @@ Game.prototype.delBody = function(numDel,numFus){
 
 
 Game.prototype.animText = function(num){
-	var cptTimeShow = 0;
+	
+	
+	//var w = $("#snake-body-"+num).css("width");//.split("px")[0];
+	//console.log(w);
+	/*var h = $("#snake-body-"+num).css("height").split("px")[0];
+	var mL = $("#snake-body-"+num).css("margin-left").split("px")[0];
+	var mT = $("#snake-body-"+num).css("margin-top").split("px")[0];
+	$("#snake-body-"+numDel).css({
+		"opacity":"0",
+		"width":"0px",
+		"height":"0px",
+		"margin":(h/2)+"px "+(w/2)+"px"
+		});
+	$("#snake-body-"+numDel).animate({
+		"opacity":"1",
+		"width":w+"px",
+		"height":h+"px",
+		"margin":(mT)+"px "+(mL)+"px"
+		},500);*/
+	
+	/*var cptTimeShow = 0;
 	var sens = 1;
 	var timeShow = setInterval(function(){
 		$("#snake-body-"+num).css({"font-size":((cptTimeShow)+13)+"pt"});
@@ -140,7 +157,7 @@ Game.prototype.animText = function(num){
 			$("#snake-body-"+num).css({"font-size":(13)+"pt"});
 			clearInterval(timeShow);
 		}
-	},30);
+	},30);*/
 };
 
 

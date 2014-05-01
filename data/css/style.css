@@ -36,7 +36,7 @@ div[id^='objet'] p,.snake-body p{
 #table td{
 	background-color:white;
 	width:auto;
-	padding:2px;
+	padding:5px;
 	border-radius:22px;
 	/*border:10px solid rgba(190,190,190,1);*/
 	box-shadow:inset 0px 0px 40px rgba(0,0,0,1);
