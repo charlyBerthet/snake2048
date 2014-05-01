@@ -27,7 +27,7 @@ div[id^='objet'] p,.snake-body p{
 
 /*	TITLE	*/
 #title{
-	width:100%;
+	margin-left:15px;
 	margin-top:30px;
 	margin-bottom:20px;
 }
