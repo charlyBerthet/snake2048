@@ -111,7 +111,7 @@ Game.prototype.delBody = function(numDel,numFus){
 			"opacity":"0",
 			"width":"0",
 			"height":"0",
-			"margin":((h/2)-2)+"px "+((w/2)-2)+"px"
+			"margin":((h/2)-5)+"px "+((w/2)-5)+"px"
 			},500,
 			function(){
 				$("#snake-body-"+numDel).remove();
