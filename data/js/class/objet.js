@@ -3,6 +3,7 @@ var Objet = function(cellule,num){
 	this.y = cellule.y || this.y || 0;
 	this.num = num || this.num || 1;
 	this.lvl = this.lvl || 1;
+	this.isJustePush = this.isJustePush || true;
 };
 
 

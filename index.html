@@ -91,6 +91,25 @@
 		
 		// CSS
 		$("#table td").css("height", $("#table td").css("width"));
+		
+		
+		// NEW GAME
+		$("#replay").click(function(){
+			game.clearTable();
+			game = new Game($("#table"),6,6);
+			game.drawSnake();
+			
+		});
+		
+		// BLOQUE SCROLL CLAVIER
+		$("body").keypress(function(event){
+			event.preventDefault();  // ça marche pour netscape/firefox/safari/chrome
+			event.returnValue=false; // ça marche pour IExplorer
+		});
+		$("body").keydown(function(event){
+			event.preventDefault();  // ça marche pour netscape/firefox/safari/chrome
+			event.returnValue=false; // ça marche pour IExplorer
+		});
 	});
 	</script>
 	
@@ -111,12 +130,16 @@
 			
 			
 			<div id="divScore">
-				<label>Score</br><span>2001</span></label>
-				<label>Best</br><span>4557</span></label>
+				<label>SCORE</br><span id="score">0</span></label>
+				<label>BEST</br><span id="best">0</span></label>
 			</div>
-			<p id="goal">
-				Try to get 2048 body !
-			</p>
+			
+			<div id="divGoalReplay">
+				<p id="goal">
+					Try to get <span class="bold">SIX</span> 2048 body !
+				</p>
+				<button id="replay">New Game</button>
+			</div>
 		</div>
 		<!-- TABLE -->
 		<div id="divTable">

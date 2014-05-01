@@ -4,7 +4,7 @@ var Game = function(elem,width,height){
 	this.elem = elem || this.elem || null;
 	this.width = width || this.width || 5;
 	this.height = height || this.height || 5;
-	this.dpl =99;
+	this.dpl =0;
 
 	this.snake = new Snake(	this.randomCase() );
 
@@ -17,6 +17,14 @@ var Game = function(elem,width,height){
 
 
 ////////////////////>>>>>>>>>>>> VUE
+
+
+// CLEAR TABLE
+Game.prototype.clearTable = function(){
+	this.elem.find("td").html("");
+	$("#score").text("0");
+};
+
 
 //DRAW TABLE
 Game.prototype.drawTable = function(){
@@ -94,7 +102,25 @@ Game.prototype.drawObjets = function(){
 		var objet = this.listeObjet[key];
 		var elem = this.elem.find("td[data-row='"+objet.y+"'][data-col='"+objet.x+"']");
 		$("#objet-"+key).remove();
-		elem.html("<div id='objet-"+key+"' class='objetType"+objet.num+"' data-lvl='"+objet.lvl+"'><p>"+objet.lvl+"</p></div>");
+		
+		var elObjet = $("<div id='objet-"+key+"' class='objetType"+objet.num+"' data-lvl='"+objet.lvl+"'><p>"+objet.lvl+"</p></div>");
+		if(objet.isJustePush == true){
+			var w = parseInt($("#table td").css("width").split("px")[0]) - 7;
+			var h = parseInt($("#table td").css("height").split("px")[0]) - 7;
+			elObjet.css({"opacity":"0","width":"0px","height":"0px","margin":((h/2))+"px "+((w/2))+"px"});
+			elem.html(elObjet);
+			elObjet.animate({
+				"opacity":"1",
+				"width":"100%",
+				"height":"100%",
+				"margin":"0px 0px"
+			},500);
+			//objet.isJustePush = false;
+		}else{
+			elem.html(elObjet);
+		}
+			
+		
 	}
 };
 
@@ -105,8 +131,8 @@ Game.prototype.drawObjets = function(){
 // DEL BODY
 Game.prototype.delBody = function(numDel,numFus){
 	try{
-		var w = $("#snake-body-"+numDel).css("width").split("px")[0];
-		var h = $("#snake-body-"+numDel).css("height").split("px")[0];
+		var w = parseInt($("#snake-body-"+numDel).css("width").split("px")[0]);
+		var h = parseInt($("#snake-body-"+numDel).css("height").split("px")[0]);
 		$("#snake-body-"+numDel).animate({
 			"opacity":"0",
 			"width":"0",
@@ -117,9 +143,6 @@ Game.prototype.delBody = function(numDel,numFus){
 				$("#snake-body-"+numDel).remove();
 		});
 		
-		if(numFus != null){
-			this.animText(numFus);
-		}
 	}catch(e){
 		$("#snake-body-"+numDel).remove();
 	};
@@ -129,40 +152,12 @@ Game.prototype.delBody = function(numDel,numFus){
 };
 
 
-
-Game.prototype.animText = function(num){
-	
-	
-	//var w = $("#snake-body-"+num).css("width");//.split("px")[0];
-	//console.log(w);
-	/*var h = $("#snake-body-"+num).css("height").split("px")[0];
-	var mL = $("#snake-body-"+num).css("margin-left").split("px")[0];
-	var mT = $("#snake-body-"+num).css("margin-top").split("px")[0];
-	$("#snake-body-"+numDel).css({
-		"opacity":"0",
-		"width":"0px",
-		"height":"0px",
-		"margin":(h/2)+"px "+(w/2)+"px"
-		});
-	$("#snake-body-"+numDel).animate({
-		"opacity":"1",
-		"width":w+"px",
-		"height":h+"px",
-		"margin":(mT)+"px "+(mL)+"px"
-		},500);*/
-	
-	/*var cptTimeShow = 0;
-	var sens = 1;
-	var timeShow = setInterval(function(){
-		$("#snake-body-"+num).css({"font-size":((cptTimeShow)+13)+"pt"});
-		cptTimeShow = cptTimeShow  + (1* sens) ;
-		if(cptTimeShow > 7)
-			sens = sens * -1;
-		else if(cptTimeShow <= 0){
-			$("#snake-body-"+num).css({"font-size":(13)+"pt"});
-			clearInterval(timeShow);
-		}
-	},30);*/
+// AFFICHE SCORE
+Game.prototype.showScore = function(){
+	var score = 0;
+	for(var k in this.snake.listeOfBody)
+		score += parseInt(this.snake.listeOfBody[k].lvl);
+	$("#score").text(score);
 };
 
 
@@ -192,13 +187,22 @@ Game.prototype.deplacement = function(){
 	this.fusionBodyWhileYouCan();
 	
 	// Ajoute objet
-	if(this.dpl >= 3){
-		this.addObjet();
-		this.dpl = 0;
+	if(this.dpl % 3 == 0){
+		if(this.dpl != 0 && this.dpl % 18 == 0){
+			this.addObjet(2);
+		}else{
+			this.addObjet(1);
+		}
+		
 	}
 
 	// Affiche objet
 	this.drawObjets();
+	
+	
+	// AFFICHE LE SCORE
+	this.showScore();
+	
 	// On dpl ++
 	this.dpl++;
 };
@@ -354,10 +358,9 @@ Game.prototype.isDispo = function(cellule){
 
 
 //ADD OBJET
-Game.prototype.addObjet = function(){
+Game.prototype.addObjet = function(type){
 	var cell = this.randomCase(); 
-	var rand = Math.floor((Math.random()*9)+1);
-	var o = new Objet(cell,(rand == 4 ? 2 : 1));
+	var o = new Objet(cell,type);
 	o.randLvl();
 	this.listeObjet.push(o);
 };
