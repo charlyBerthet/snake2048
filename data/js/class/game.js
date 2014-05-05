@@ -5,14 +5,17 @@ var Game = function(elem,width,height){
 	this.width = width || this.width || 5;
 	this.height = height || this.height || 5;
 	this.dpl =0;
-
+	this.vgameOver = false;
 	this.snake = new Snake(	this.randomCase() );
 
 	var rand = Math.floor(Math.random()*4);
 	this.snake.direction( (rand == 0 ? 1 : rand == 1 ? -1 : 0), (rand == 2 ? 1 : rand == 3 ? -1 : 0));
 
+	this.keyStorage = "snake2048";
 	this.bodyADel = new Array();
 	this.listeObjet = new Array();
+	
+	$("#best").html(this.giveBestScore());
 };
 
 
@@ -105,17 +108,15 @@ Game.prototype.drawObjets = function(){
 		
 		var elObjet = $("<div id='objet-"+key+"' class='objetType"+objet.num+"' data-lvl='"+objet.lvl+"'><p>"+objet.lvl+"</p></div>");
 		if(objet.isJustePush == true){
-			var w = parseInt($("#table td").css("width").split("px")[0]) - 7;
-			var h = parseInt($("#table td").css("height").split("px")[0]) - 7;
-			elObjet.css({"opacity":"0","width":"0px","height":"0px","margin":((h/2))+"px "+((w/2))+"px"});
+			elObjet.css({"opacity":"0","width":"0px","height":"0px"});
 			elem.html(elObjet);
 			elObjet.animate({
-				"opacity":"1",
 				"width":"100%",
 				"height":"100%",
-				"margin":"0px 0px"
+				"opacity":"1"
 			},500);
-			//objet.isJustePush = false;
+			
+			objet.isJustePush = false;
 		}else{
 			elem.html(elObjet);
 		}
@@ -131,13 +132,10 @@ Game.prototype.drawObjets = function(){
 // DEL BODY
 Game.prototype.delBody = function(numDel,numFus){
 	try{
-		var w = parseInt($("#snake-body-"+numDel).css("width").split("px")[0]);
-		var h = parseInt($("#snake-body-"+numDel).css("height").split("px")[0]);
 		$("#snake-body-"+numDel).animate({
 			"opacity":"0",
 			"width":"0",
-			"height":"0",
-			"margin":((h/2)-5)+"px "+((w/2)-5)+"px"
+			"height":"0"
 			},500,
 			function(){
 				$("#snake-body-"+numDel).remove();
@@ -171,42 +169,106 @@ Game.prototype.justePush = function(elem,callback){
 };
 
 
+
+//////////////		GAME OVER 		\\\\\\\\\\\\\\\\\\\\\
+Game.prototype.gameOver = function(){
+	this.snake.vgameOver = true;
+	$(this).css("display","none");
+	$("#gameOver").fadeTo("slow",1);
+	var score = 0;
+	for(var k in this.snake.listeOfBody)
+		score += parseInt(this.snake.listeOfBody[k].lvl);
+	$("#gameOverScore").html(score);
+	this.saveBestScore();
+};
+
+
+
+
+
 ////////////////////>>>>>>>>>>>> CONTROLE
 
 //DEPLACEMENT
 Game.prototype.deplacement = function(){
-	// Bouge snake
-	this.moveSnake();
-	// Snake mange Objet ?
-	this.snakeMangeObjet();
-	
-	// Affiche snake
-	this.drawSnake();
-	
-	// On fusion temps qu'on peut
-	this.fusionBodyWhileYouCan();
-	
-	// Ajoute objet
-	if(this.dpl % 3 == 0){
-		if(this.dpl != 0 && this.dpl % 18 == 0){
-			this.addObjet(2);
-		}else{
-			this.addObjet(1);
-		}
+	if(this.vgameOver == false){
 		
+		
+		// Bouge snake
+		this.moveSnake();
+		// Snake mange Objet ?
+		this.snakeMangeObjet();
+		
+		// Affiche snake
+		this.drawSnake();
+		
+		
+		
+		// On fusion temps qu'on peut
+		this.fusionBodyWhileYouCan();
+		
+		// Ajoute objet
+		if(this.dpl % 3 == 0){
+			if(this.dpl != 0 && this.dpl % 18 == 0){
+				this.addObjet(2);
+			}else{
+				this.addObjet(1);
+			}
+			
+		}
+	
+		// Affiche objet
+		this.drawObjets();
+		
+		
+		// AFFICHE LE SCORE
+		this.showScore();
+		
+		
+		// CHECK SI SE MORD LA QUEUE
+		if(this.mordQueue())
+			this.gameOver();
+		
+		// CHECK BLOQUE
+		if(this.isBloque())
+			this.gameOver();
+			
+		// On dpl ++
+		this.dpl++;
 	}
-
-	// Affiche objet
-	this.drawObjets();
-	
-	
-	// AFFICHE LE SCORE
-	this.showScore();
-	
-	// On dpl ++
-	this.dpl++;
 };
 
+
+
+// cHECK SI SE MORD LA QUEUE
+Game.prototype.mordQueue = function(){
+	for(var k in this.snake.listeOfBody){
+		if(this.snake.listeOfBody[k].x == this.snake.head.x && this.snake.listeOfBody[k].y == this.snake.head.y){
+			return true;
+		}
+	}
+	return false;
+};
+
+
+
+
+// CHECK SI LE SNAKE EST BLOQUE
+Game.prototype.isBloque = function(){
+	var left = false, right = false,  top = false, bottom = false;
+	for(var k in this.snake.listeOfBody){
+		if(this.snake.listeOfBody[k].x == this.snake.head.x && this.snake.listeOfBody[k].y == this.snake.head.y - 1)// TOP
+			top = true;
+		else if(this.snake.listeOfBody[k].x == this.snake.head.x && this.snake.listeOfBody[k].y == this.snake.head.y + 1)// BOTTOM
+			bottom = true;
+		else if(this.snake.listeOfBody[k].x == this.snake.head.x - 1 && this.snake.listeOfBody[k].y == this.snake.head.y)// LEFT
+			left = true;
+		else if(this.snake.listeOfBody[k].x == this.snake.head.x + 1 && this.snake.listeOfBody[k].y == this.snake.head.y)// RIGHT
+			right = true;
+	}
+	if(left && right && top && bottom)
+		return true;
+	return false;
+};
 
 
 
@@ -363,4 +425,35 @@ Game.prototype.addObjet = function(type){
 	var o = new Objet(cell,type);
 	o.randLvl();
 	this.listeObjet.push(o);
+};
+
+
+
+// GIVE BEST SCORE
+Game.prototype.giveBestScore = function(){
+	if(localStorage){
+		if(localStorage[this.keyStorage] != undefined && localStorage[this.keyStorage] != "undefined" && localStorage[this.keyStorage] != null && localStorage[this.keyStorage] != "")
+			return localStorage[this.keyStorage];
+	}
+	return "0";
+};
+
+//SAVE BEST SCORE
+Game.prototype.saveBestScore = function(){
+	var score = 0;
+	for(var k in this.snake.listeOfBody)
+		score += parseInt(this.snake.listeOfBody[k].lvl);
+	if(localStorage){
+		
+		if(parseInt(localStorage[this.keyStorage]) < score){
+			localStorage[this.keyStorage] = score;
+			$("#best").html(score);
+			
+		}else if(localStorage[this.keyStorage] == "undefined" || localStorage[this.keyStorage] == undefined || localStorage[this.keyStorage] == null || localStorage[this.keyStorage] == ""){
+			localStorage[this.keyStorage] = score;
+			$("#best").html(score);
+		}else{
+			console.log(localStorage[this.keyStorage]);
+		}
+	}
 };
